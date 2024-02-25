@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fitness Pro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: white;
+  }
+    .navbar-brand {
+      font-size: 24px;
+      font-Weight: bold;
+      font-family: 'Fjalla One', sans-serif; /* Specify desired font family */
+      
+    }
+    .carousel-caption h5 {
+      margin-bottom: 20px; /* Adjust the margin as needed */
+  }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" >
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#" >Fitness Pro</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" >
+                        <i class="bi bi-person-fill"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item"  ><b>{{ user }}</b></a></li>
+                        <li><a class="dropdown-item" href="/modifyuser" >Modify Profile</a></li>
+                        <li><a class="dropdown-item" href="/signout" style="color: red;" >Signout</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<!-- Carousel -->
+<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
+      aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="{% static 'images/img1.jpg' %}" class="d-block w-100 carousel-img" alt="...">
+      <div class="carousel-caption d-none d-md-block" style = "color: white;">
+        <h3>Calorie Tracker</h3>
+        <h5 class="mb-3">Effortlessly monitor your daily calorie intake and manage your nutrition with our calorie tracking tool. </h5>
+        <a href="/calorietracker" class="btn btn-primary text-white">Track calories</a>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/img2.jpg' %}" class="d-block w-100 carousel-img" alt="...">
+      <div class="carousel-caption d-none d-md-block" style = "color: white;"> 
+        <h3>Recipe Recommendation</h3>
+        <h5 class="mb-3">Get personalized recipe recommendations tailored to your dietary preferences and fitness objectives</h5 >
+        <a href="/RecommendationSystem" class="btn btn-primary text-white">Recommend Recipes</a>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <img src="{% static 'images/img3.jpg' %}" class="d-block w-100 carousel-img" alt="...">
+      <div class="carousel-caption d-none d-md-block" style = "color: white;" >
+        <h3>Daily Statistics</h3>
+        <h5 class="mb-3" >Stay motivated by keeping track of your progress with detailed daily statistics and insights. </h5>
+        <a href="/dailystats" class="btn btn-primary text-white">Daily Statistics</a>
+      </div>
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+    data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+    data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<style>
+  .carousel-img {
+    height: 700px; /* Set a fixed height for all carousel images */
+    object-fit: cover; /* Ensure images maintain aspect ratio and cover entire space */
+  }
+</style>
+
+
+
+<!-- About Section -->
+<div class="container mt-5" style="background-color: #f0f0f0; padding: 30px; border-radius: 10px;">
+  <h1 style="color: black; font-size: 36px; text-align: center; margin-bottom: 30px;">About Fitness Pro</h1>
+  <p style="font-size: 18px; line-height: 1.6;">
+      Welcome to Fitness Pro, your ultimate fitness companion! We are dedicated to helping you achieve your health and fitness goals by providing you with powerful tools and resources.
+  </p>
+  <p style="font-size: 18px; line-height: 1.6;">
+      With Fitness Pro, you can:
+  </p>
+  <ul style="font-size: 18px;">
+      <li>Track your daily activities, workouts, and nutrition</li>
+      <li>Set personalized fitness goals and monitor your progress</li>
+      <li>Get access to a vast database of exercises, recipes, and expert advice</li>
+      <li>Connect with a supportive community of like-minded individuals</li>
+  </ul>
+  <p style="font-size: 18px; line-height: 1.6;">
+      Whether you're a beginner looking to kickstart your fitness journey or a seasoned athlete striving for peak performance, Fitness Pro is here to support you every step of the way.
+  </p>
+</div>
+
+
+
+
+<footer class="bg-dark text-white text-center py-4 mt-5">
+  <p>Final Year Project by Samuel Mendonca and Aaditya Rawat</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+  crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style> 
+         body {
+        background-color: #f0f0f0;
+         }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h2 class="card-title text-center">Sign Up</h2>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Username" name="username" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <input type="text" class="form-control" placeholder="First Name" name="fname" required>
+                    </div>
+                    <div class="form-group col">
+                        <input type="text" class="form-control" placeholder="Last Name" name="lname" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="email" class="form-control" placeholder="Email" name="email" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <input type="password" class="form-control" placeholder="Password" name="password" required>
+                    </div>
+                    <div class="form-group col">
+                        <input type="number" class="form-control" placeholder="Age" name="age" min="15" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col">
+                        <input type="number" class="form-control" placeholder="Current Weight (kgs)" name="current_weight" min="0" required>
+                    </div>
+                    <div class="form-group col">
+                        <input type="number" class="form-control" placeholder="Height (cms)" name="height" min="0" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="male" name="gender" class="custom-control-input" value="male" required>
+                        <label class="custom-control-label" for="male">Male</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="female" name="gender" class="custom-control-input" value="female" required>
+                        <label class="custom-control-label" for="female">Female</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Activity Level:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="not_very_active" name="activity_level" class="custom-control-input" value="not_very_active" required>
+                        <label class="custom-control-label" for="not_very_active">Not Very Active</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="moderately_active" name="activity_level" class="custom-control-input" value="moderately_active" required>
+                        <label class="custom-control-label" for="moderately_active">Moderately Active</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="very_active" name="activity_level" class="custom-control-input" value="very_active" required>
+                        <label class="custom-control-label" for="very_active">Very Active</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Goal:</label>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="maintain_weight" name="goal" class="custom-control-input" value="maintain_weight" required>
+                        <label class="custom-control-label" for="maintain_weight">Maintain Weight</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="gain_weight" name="goal" class="custom-control-input" value="gain_weight" required>
+                        <label class="custom-control-label" for="gain_weight">Gain Weight</label>
+                    </div>
+                    <div class="custom-control custom-radio">
+                        <input type="radio" id="lose_weight" name="goal" class="custom-control-input" value="lose_weight" required>
+                        <label class="custom-control-label" for="lose_weight">Lose Weight</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success btn-block">Sign Up</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

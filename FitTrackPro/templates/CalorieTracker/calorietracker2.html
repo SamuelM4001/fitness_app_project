@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load mathfilters %}
+    {% load static %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutritional Information</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url({% static 'images/healthyfood2.jpg' %});
+            padding-top: 50px;
+        }
+        .container {
+            width: 80%; 
+            margin: 0 auto;
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .table-wrapper {
+            display: flex;
+            justify-content: space-between;
+        }
+        .table-container {
+            width: 40%; 
+        }
+        table {
+            width: 100%;
+        }
+        th, td {
+            padding: 5px;
+            border-bottom: 1px solid #dee2e6;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    {% if messages %}
+    <ul class="messages" style="list-style-type: none; padding: 0; background-color: #0a2c0d; color: #ffffff; position: absolute; top: 0; left: 0; width: 100%; padding: 10px;">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %} style="padding: 10px; margin-bottom: 5px;">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <br>
+    
+    <div class="container">
+        {%if data|length > 0%}
+        <h1>Nutritional Information</h1>
+        <div class="table-wrapper">
+            <div class="table-container">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <tbody>
+                            {% for item in data %}
+                            <tr>
+                                <th scope="row">Name</th>
+                                <td>{{ item.name }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Calories</th>
+                                <td>{{ item.calories|div:100|mul:quantity|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Serving Size (g)</th>
+                                <td>{{ item.serving_size_g |div:100|mul:quantity|floatformat:2}}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total Fat (g)</th>
+                                <td>{{ item.fat_total_g|div:100|mul:quantity|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Saturated Fat (g)</th>
+                                <td>{{ item.fat_saturated_g|div:100|mul:quantity|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Protein (g)</th>
+                                <td>{{ item.protein_g|div:100|mul:quantity|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Sodium (mg)</th>
+                                <td>{{ item.sodium_mg }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Potassium (mg)</th>
+                                <td>{{ item.potassium_mg }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Cholesterol (mg)</th>
+                                <td>{{ item.cholesterol_mg }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Total Carbohydrates (g)</th>
+                                <td>{{ item.carbohydrates_total_g|div:100|mul:quantity|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Dietary Fiber (g)</th>
+                                <td>{{ item.fiber_g|div:100|mul:quantity|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Sugar (g)</th>
+                                <td>{{ item.sugar_g|div:100|mul:quantity|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                {% for item in data %}
+                <canvas id="myChart" style="width: 100%; height: 550px;"></canvas>
+                <script>
+                    var ctx = document.getElementById("myChart").getContext('2d');
+                    var myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Protein', 'Carbs', 'Fat'],
+                            datasets: [{
+                                label: 'Nutritional Information',
+                                data: [{{ item.protein_g|div:100|mul:quantity|floatformat:2 }},
+                                 {{ item.carbohydrates_total_g|div:100|mul:quantity|floatformat:2 }},
+                                 {{ item.fat_total_g|div:100|mul:quantity|floatformat:2 }}],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            },
+                            responsive: false,
+                            maintainAspectRatio: false,
+                        }
+                    });
+                </script>
+                {% endfor %}
+            </div>
+        </div>
+        {%else%}
+        <h2>No data</h2>
+        {% endif%}
+
+
+        
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-6 text-center">
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn" style="background-color: #042e45; color: #ffffff;">Log Calories</button>
+                </form>
+            </div>
+        </div>
+        <div class="row justify-content-center mt-4">
+            <div class="col-md-7 text-center">
+                <a href="/calorietracker" class="btn btn-primary">Add More</a>
+                <a href="/modifyvalues" class="btn btn-primary">Delete Entries</a>
+                <a href="/dailystats" class="btn btn-primary">Check Daily Stats</a> 
+                <a href="/home" class="btn btn-primary">Go Home</a> 
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+    {% load mathfilters %}
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Daily Stats</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #7393B3;
+        }
+        .chart-container {
+            height: auto;
+            width: 100%;
+        }
+        .centered {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+        .card {
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card bg-opacity-75">
+                <h2 class="card-header text-center">Nutritional Consumption</h2>
+                <div class="card-body chart-container centered">
+                    <canvas id="donut-chart"></canvas>
+                </div>
+                <div class="card-footer">
+                    <div id="nutritional-values" class="text-center">
+                        <h3>Macros consumed today</h3>
+                        <ul class="list-unstyled">
+                            <li>Protein: <span id="protein-value">{{ total_protein_today }}</span> grams</li>
+                            <li>Carbs: <span id="carbs-value">{{ total_carbs_today }}</span> grams</li>
+                            <li>Fat: <span id="fat-value">{{ total_fat_today }}</span> grams</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-opacity-75">
+                <h2 class="card-header text-center">Ideal vs. Consumed Calories</h2>
+                <div class="card-body chart-container">
+                    <canvas id="bar-chart"></canvas>
+                </div>
+                <div class="card-footer">
+                    <div id="calories-comparison" class="text-center">
+                        <h3>Calories Comparison</h3>
+                        <p>You've consumed {{ calories_consumed_today }} out of {{ ideal_calories|floatformat:2 }} ideal calories today, which is approximately {{ calories_consumed_today |div:ideal_calories|mul:100|floatformat:2}}%.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card bg-opacity-75">
+                <h2 class="card-header text-center">Weekly Stats</h2>
+                <div class="card-body chart-container">
+                    <canvas id="line-chart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-opacity-75">
+                <h2 class="card-header text-center">Your Food History Today</h2>
+                <div class="card-body">
+                    {% block content %}
+                
+                    {% if food_entries %}
+                        <ul>
+                            {% for entry in food_entries %}
+                                {% if entry.date == current_date %}
+                                    <li>{{ entry.food_name }}: {{ entry.calories_consumed }} calories ({{ entry.date }})</li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No food entries for today.</p>
+                    {% endif %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    // Donut Chart
+    var donutChartCanvas = document.getElementById('donut-chart').getContext('2d');
+    var donutChart = new Chart(donutChartCanvas, {
+        type: 'doughnut',
+        data: {
+            labels: ['Protein', 'Carbs', 'Fat'],
+            datasets: [{
+                data: [{{ total_protein_today }}, {{ total_carbs_today }}, {{ total_fat_today }}],
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.6)',
+                    'rgba(54, 162, 235, 0.6)',
+                    'rgba(255, 206, 86, 0.6)',
+                ],
+                hoverBackgroundColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            cutoutPercentage: 70,
+            aspectRatio: 1,
+            maintainAspectRatio: false,
+        }
+    });
+
+    // Bar Chart
+    var barChartCanvas = document.getElementById('bar-chart').getContext('2d');
+    var barChart = new Chart(barChartCanvas, {
+        type: 'bar',
+        data: {
+            labels: ['Ideal Calories', 'Calories Consumed Today'],
+            datasets: [{
+                label: 'Calories Comparison',
+                data: [{{ ideal_calories|safe }}, {{ calories_consumed_today|safe }}],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.6)', // Color for Ideal Calories
+                    'rgba(255, 99, 132, 0.6)', // Color for Calories Consumed Today
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{ ticks: { beginAtZero: true } }]
+            },
+            aspectRatio: 1,
+            maintainAspectRatio: false,
+        }
+    });
+
+    // Line Chart
+    var lineChartCanvas = document.getElementById('line-chart').getContext('2d');
+    var lineChart = new Chart(lineChartCanvas, {
+        type: 'line',
+        data: {
+            labels: {{ days|safe }},
+            datasets: [
+                {
+                    label: 'Protein Consumption (Daily)',
+                    data: {{ protein_totals|safe }},
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                },
+                {
+                    label: 'Carbs Consumption (Daily)',
+                    data: {{ carbs_totals|safe }},
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 2,
+                },
+                {
+                    label: 'Fat Consumption (Daily)',
+                    data: {{ fat_totals|safe }},
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 2,
+                }
+            ]
+        },
+        options: {
+            scales: {
+                yAxes: [{ ticks: { beginAtZero: true } }]
+            },
+            aspectRatio: 1,
+            maintainAspectRatio: false,
+        }
+    });
+</script>
+
+<div class="row justify-content-center mt-2">
+    <div class="col-md-7 text-center">
+        <a href="/calorietracker" class="btn btn-success">Calorie Tracker</a>
+        <a href="/RecommendationSystem" class="btn btn-success">Recommend Food </a> 
+        <a href="/home" class="btn btn-success">Go Home</a> 
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
