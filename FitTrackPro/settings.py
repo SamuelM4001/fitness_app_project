@@ -15,7 +15,7 @@ import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent/'FitTrackPro'
-static_dir = Path(__file__).resolve().parent.parent/'Users/Static'
+static_dir = Path(__file__).resolve().parent.parent/'Users/static'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-+!0q474by_7d%d!_@si0v97x=honb$a&dk*2-7+apks)zu$yf9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
