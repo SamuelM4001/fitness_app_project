@@ -45,7 +45,7 @@ def ingredient_parser(ingreds):
     if isinstance(ingreds, list):
         ingredients = ingreds
     else:
-        ingredients = ingreds.split()
+        ingredients = re.split(r'\s|,', ingreds)
         
     translator = str.maketrans('', '', string.punctuation)
     lemmatizer = WordNetLemmatizer()
@@ -93,30 +93,13 @@ def title_parser(title):
 
 #RECOMMENDATION SYSTEM
     
-def recs(ingredients,data,n,picklecall):
-    '''this is gonna be wordy but its very important i dont forget this also im a genius but yeah
-    so basically i was getting an error about indexes cause i was passing the function from views the second time but with data as
-    the data from the first function call
-    basically i call this function once, get recs and then i call the function again but wwith ingredients the user often uses to get
-    user preferred recipes
-    now i wwas getting an error because the tfidf encoding was done on the parsed_data_ftp.csv and the indexes were
-    theredore based on the larger dataset and the second call was using a smaller dataset which wwill obviously not have all those indexes
-    so if picklecall= 0 then it means ill be using the orginal dataset else im using some other dataset and i should encode it again
-    i cant just encode the first dataset everytime cause its huge and processing time will be increased'''
-
-    if picklecall == 0:
-        # Loading ML model and encoding (encoding is basically the mapping of letters to numbers)
-        with open('C:/Users/ACER/Desktop/Project/FitTrackPro/datacsv/encoding.pickle', 'rb') as f:
+def recs(ingredients,n):
+    data = pd.read_csv('./FitTrackPro/datacsv/parsed_data_ftp.csv')
+    with open('C:/Users/ACER/Desktop/Project/FitTrackPro/datacsv/encoding.pickle', 'rb') as f:
             tfidf_encodings = pickle.load(f)
             
-        with open('C:/Users/ACER/Desktop/Project/FitTrackPro/datacsv/trained_model.pickle', "rb") as f:
+    with open('C:/Users/ACER/Desktop/Project/FitTrackPro/datacsv/trained_model.pickle', "rb") as f:
             tfidf = pickle.load(f)
-    
-    else :
-        data['Parsed_Ingredients'] = data.Parsed_Ingredients.values.astype('U') #ensuring the data is treated as unicode strings
-        tfidf = TfidfVectorizer()
-        tfidf.fit(data['Parsed_Ingredients']) #Basically makes the vectorizer go through the column and make a list of unique words
-        tfidf_encodings = tfidf.transform(data['Parsed_Ingredients']) 
             
     try:
         ingredients_parsed = ingredient_parser(ingredients)

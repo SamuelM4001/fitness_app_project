@@ -11,7 +11,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #7393B3;
+            background-color:#b9bbbc;
+            color: #fff;
         }
         .chart-container {
             height: auto;
@@ -24,7 +25,8 @@
             height: 100%;
         }
         .card {
-            background-color: white;
+            background-color:#e8e8e9; /* Dark card background */
+            color: black;
         }
     </style>
 </head>
@@ -36,7 +38,7 @@
             <div class="card bg-opacity-75">
                 <h2 class="card-header text-center">Nutritional Consumption</h2>
                 <div class="card-body chart-container centered">
-                    <canvas id="donut-chart"></canvas>
+                    <canvas id="pie-chart"></canvas>
                 </div>
                 <div class="card-footer">
                     <div id="nutritional-values" class="text-center">
@@ -54,12 +56,17 @@
             <div class="card bg-opacity-75">
                 <h2 class="card-header text-center">Ideal vs. Consumed Calories</h2>
                 <div class="card-body chart-container">
-                    <canvas id="bar-chart"></canvas>
+                    <canvas id="caloriecomparison"></canvas>
                 </div>
                 <div class="card-footer">
                     <div id="calories-comparison" class="text-center">
                         <h3>Calories Comparison</h3>
                         <p>You've consumed {{ calories_consumed_today }} out of {{ ideal_calories|floatformat:2 }} ideal calories today, which is approximately {{ calories_consumed_today |div:ideal_calories|mul:100|floatformat:2}}%.</p>
+                        {% if calories_consumed_today < ideal_calories %}
+                        <p>You need to consume {{ ideal_calories|sub:calories_consumed_today|floatformat:2 }} more calories.</p>
+                        {% else %}
+                        <p><b>You've exceeded your caloric goals.</b></p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -85,7 +92,7 @@
                         <ul>
                             {% for entry in food_entries %}
                                 {% if entry.date == current_date %}
-                                    <li>{{ entry.food_name }}: {{ entry.calories_consumed }} calories ({{ entry.date }})</li>
+                                    <li>{{ entry.food_name }}: {{ entry.calories_consumed }} calories </li>
                                 {% endif %}
                             {% endfor %}
                         </ul>
@@ -102,58 +109,61 @@
 
 <script>
     // Donut Chart
-    var donutChartCanvas = document.getElementById('donut-chart').getContext('2d');
-    var donutChart = new Chart(donutChartCanvas, {
-        type: 'doughnut',
+    var pieChartCanvas = document.getElementById('pie-chart').getContext('2d');
+    var pieChart = new Chart(pieChartCanvas, {
+        type: 'pie',
         data: {
             labels: ['Protein', 'Carbs', 'Fat'],
             datasets: [{
                 data: [{{ total_protein_today }}, {{ total_carbs_today }}, {{ total_fat_today }}],
                 backgroundColor: [
-                    'rgba(255, 99, 132, 0.6)',
-                    'rgba(54, 162, 235, 0.6)',
-                    'rgba(255, 206, 86, 0.6)',
+                    '#FF3311',
+                    "rgba(54, 162, 235, 1)",
+                    '#BEB334',
                 ],
                 hoverBackgroundColor: [
                     'rgba(255, 99, 132, 1)',
                     'rgba(54, 162, 235, 1)',
                     'rgba(255, 206, 86, 1)',
                 ],
-                borderWidth: 1
+                borderWidth: 0
             }]
         },
         options: {
-            cutoutPercentage: 70,
             aspectRatio: 1,
             maintainAspectRatio: false,
         }
     });
 
-    // Bar Chart
-    var barChartCanvas = document.getElementById('bar-chart').getContext('2d');
-    var barChart = new Chart(barChartCanvas, {
-        type: 'bar',
+    // Bar chart
+    var donutChartCanvas = document.getElementById('caloriecomparison').getContext('2d');
+    var idealCalories = {{ ideal_calories|safe }};
+    var caloriesConsumedToday = {{ calories_consumed_today|safe }};
+    var remainingCalories = idealCalories - caloriesConsumedToday;
+    var backgroundColor;
+    
+    if (caloriesConsumedToday > idealCalories) {
+        backgroundColor = '#A30000'; // Red color for the whole circle
+    } else {
+        backgroundColor = ['#004B95','#2d3436']; // Green color for "Calories Consumed Today" and gray for "Remaining Calories"
+    }
+    
+    var donutChart = new Chart(donutChartCanvas, {
+        type: 'doughnut',
         data: {
-            labels: ['Ideal Calories', 'Calories Consumed Today'],
+            labels: ['Calories Consumed Today', 'Remaining Calories'],
             datasets: [{
-                label: 'Calories Comparison',
-                data: [{{ ideal_calories|safe }}, {{ calories_consumed_today|safe }}],
-                backgroundColor: [
-                    'rgba(75, 192, 192, 0.6)', // Color for Ideal Calories
-                    'rgba(255, 99, 132, 0.6)', // Color for Calories Consumed Today
-                ],
-                borderWidth: 1
+                data: [caloriesConsumedToday, remainingCalories],
+                backgroundColor: backgroundColor,
+                borderWidth: 0
             }]
         },
         options: {
-            scales: {
-                yAxes: [{ ticks: { beginAtZero: true } }]
-            },
             aspectRatio: 1,
             maintainAspectRatio: false,
         }
     });
-
+    
     // Line Chart
     var lineChartCanvas = document.getElementById('line-chart').getContext('2d');
     var lineChart = new Chart(lineChartCanvas, {
@@ -164,19 +174,19 @@
                 {
                     label: 'Protein Consumption (Daily)',
                     data: {{ protein_totals|safe }},
-                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderColor: '#FF3311',
                     borderWidth: 2,
                 },
                 {
                     label: 'Carbs Consumption (Daily)',
                     data: {{ carbs_totals|safe }},
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderColor: "rgba(54, 162, 235, 1)",
                     borderWidth: 2,
                 },
                 {
                     label: 'Fat Consumption (Daily)',
                     data: {{ fat_totals|safe }},
-                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderColor: '#BEB334',
                     borderWidth: 2,
                 }
             ]
@@ -193,8 +203,9 @@
 
 <div class="row justify-content-center mt-2">
     <div class="col-md-7 text-center">
-        <a href="/calorietracker" class="btn btn-success">Calorie Tracker</a>
-        <a href="/RecommendationSystem" class="btn btn-success">Recommend Food </a> 
+        <a href="/calorietracker" class="btn"style="background-color: #66b032;color: white;">Add More Entries</a>
+        <a href="/modifyvalues" class="btn btn-danger">Delete Entries</a>
+        <a href="/RecommendationSystem" class="btn "style="background-color: #84a2d4;color: white;">Recommend Food </a> 
         <a href="/home" class="btn btn-success">Go Home</a> 
     </div>
 </div>

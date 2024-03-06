@@ -60,6 +60,14 @@
     </style>
 </head>
 <body>
+    {% if messages %}
+    <ul class="messages" style="list-style-type: none; padding: 0; background-color: #0a2c0d; color: #ffffff; position: absolute; top: 0; left: 0; width: 100%; padding: 10px;">
+        {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %} style="padding: 10px; margin-bottom: 5px;">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    
     <div class="container mt-5">
         <h2 class="text-center">Delete Entries</h2>
         <table class="table">

@@ -140,9 +140,9 @@
                                  {{ item.carbohydrates_total_g|div:100|mul:quantity|floatformat:2 }},
                                  {{ item.fat_total_g|div:100|mul:quantity|floatformat:2 }}],
                                 backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
+                                '#C9190B',
+                                '#519DE9',
+                                '#F4C145'
                                 ],
                                 borderColor: [
                                     'rgba(255, 99, 132, 1)',
@@ -166,24 +166,27 @@
                 {% endfor %}
             </div>
         </div>
-        {%else%}
-        <h2>No data</h2>
-        {% endif%}
-
-
-        
         <div class="row justify-content-center mt-4">
             <div class="col-md-6 text-center">
                 <form method="post">
                     {% csrf_token %}
-                    <button type="submit" class="btn" style="background-color: #042e45; color: #ffffff;">Log Calories</button>
+                    <button type="submit" class="btn btn-success" >Save Entry</button>
                 </form>
             </div>
         </div>
+        {%else%}
+        <h2>Invalid Input</h2>
+        <h4>Please Review Your Input</h4>
+        <p>Kindly review the entered information to ensure the accuracy of the food item or to rectify any potential spelling errors.</p>
+        {% endif%}
+
+
+        
+        
         <div class="row justify-content-center mt-4">
             <div class="col-md-7 text-center">
-                <a href="/calorietracker" class="btn btn-primary">Add More</a>
-                <a href="/modifyvalues" class="btn btn-primary">Delete Entries</a>
+                <a href="/calorietracker" class="btn btn-primary">Search and Add More</a>
+                <a href="/modifyvalues" class="btn btn-danger">Delete Entries</a>
                 <a href="/dailystats" class="btn btn-primary">Check Daily Stats</a> 
                 <a href="/home" class="btn btn-primary">Go Home</a> 
             </div>

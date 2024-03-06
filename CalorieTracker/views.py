@@ -28,7 +28,7 @@ def calorietracker(request):
             data = json.loads(response.content)
             #for database
             if data == []:
-                data = "Invalid Input"
+                data = ""
                 food_name = "No name"
                 new_calories = 0
                 carbs = 0
@@ -74,6 +74,7 @@ def calorietracker2(request):
     calories_consumed_today = 0      
     for i in food_entries:
         calories_consumed_today += i.calories_consumed
+    
          
 
     return render(request,'CalorieTracker/calorietracker2.html',{'data': data, 'new_calories':new_calories,'food_entries':food_entries,
@@ -101,12 +102,13 @@ def modifyvalues(request):
             if entry_to_delete.user == request.user:
                 entry_to_delete.delete()
                 messages.success(request, 'Entry deleted successfully!')
+                
             else:
                 messages.error(request, 'You do not have permission to delete this entry.')
         except DailyCaloriesConsumed.DoesNotExist:
             messages.error(request, 'Entry not found.')
         
-        redirect('modifyvalues') 
+        return redirect('modifyvalues') 
           
     return render(request, 'CalorieTracker/modifyvalues.html', {'food_entries':food_entries, 'calories_consumed':calories_consumed_today,
                                                                 'ideal_calories':ideal_calories})           

@@ -20,14 +20,14 @@
             <form method="post">
                 {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Username" name="username" required>
+                    <input type="text" class="form-control" placeholder="Username" name="username" minlength="3" maxlength="15" required>
                 </div>
                 <div class="form-row">
                     <div class="form-group col">
-                        <input type="text" class="form-control" placeholder="First Name" name="fname" required>
+                        <input type="text" class="form-control" placeholder="First Name" name="fname" minlength="3" maxlength="15" required>
                     </div>
                     <div class="form-group col">
-                        <input type="text" class="form-control" placeholder="Last Name" name="lname" required>
+                        <input type="text" class="form-control" placeholder="Last Name" name="lname" minlength="3" maxlength="15" required>
                     </div>
                 </div>
                 <div class="form-group">
@@ -35,18 +35,20 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col">
-                        <input type="password" class="form-control" placeholder="Password" name="password" required>
+                        <input type="password" class="form-control" placeholder="Password" name="password" 
+                        pattern="^(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$" required title="Password must contain at least 8 characters, including at least one number"
+                        required>
                     </div>
                     <div class="form-group col">
-                        <input type="number" class="form-control" placeholder="Age" name="age" min="15" required>
+                        <input type="number" class="form-control" placeholder="Age" name="age" min="15" max ="100" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group col">
-                        <input type="number" class="form-control" placeholder="Current Weight (kgs)" name="current_weight" min="0" required>
+                        <input type="number" class="form-control" placeholder="Current Weight (kgs)" name="current_weight" min="25" max="200" required>
                     </div>
                     <div class="form-group col">
-                        <input type="number" class="form-control" placeholder="Height (cms)" name="height" min="0" required>
+                        <input type="number" class="form-control" placeholder="Height (cms)" name="height" min="100" max="500" required>
                     </div>
                 </div>
                 <div class="form-group">
