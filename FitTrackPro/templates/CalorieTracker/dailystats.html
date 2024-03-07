@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color:#b9bbbc;
+            background-color:#171716;
             color: #fff;
         }
         .chart-container {
@@ -25,7 +25,7 @@
             height: 100%;
         }
         .card {
-            background-color:#e8e8e9; /* Dark card background */
+            background-color:rgb(255, 255, 255,0.8); /* Dark card background */
             color: black;
         }
     </style>
@@ -145,7 +145,7 @@
     if (caloriesConsumedToday > idealCalories) {
         backgroundColor = '#A30000'; // Red color for the whole circle
     } else {
-        backgroundColor = ['#004B95','#2d3436']; // Green color for "Calories Consumed Today" and gray for "Remaining Calories"
+        backgroundColor = ['#848f4b','#A2A2A2']; // Green color for "Calories Consumed Today" and gray for "Remaining Calories"
     }
     
     var donutChart = new Chart(donutChartCanvas, {
@@ -155,7 +155,8 @@
             datasets: [{
                 data: [caloriesConsumedToday, remainingCalories],
                 backgroundColor: backgroundColor,
-                borderWidth: 0
+                borderWidth: 1,
+                
             }]
         },
         options: {

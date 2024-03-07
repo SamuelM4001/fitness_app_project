@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-{% load static %}
 <html lang="en">
 <head>
+    {% load static%}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Calories</title>
@@ -15,54 +15,55 @@
             background-position: center;
             background-color: #f8f9fa; 
         }
-        .form-container {
-            max-width: 400px;
+        .container {
+            max-width: 500px;
             margin: 50px auto;
             padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8); 
+            background-color: rgba(255, 255, 255,0.9); 
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        h1 {
+            color: #fff;
+        }
         .info-container {
-            max-width: 400px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .info-container h2 {
+            margin-bottom: 10px;
+        }
+        .form-container {
+            margin-bottom: 20px;
         }
     </style>
 </head>
 <body>
-   
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-7">
-                <h1 class="text-center mb-4" style="color: white;">Track Calories</h1>
+        
+        
+        <div class="info-container">
+            <h3 class="text-center mb-2">Track Calories</h2>
+            <ul>
+                <li>Input the name of the food and the amount eaten in grams to view the food's caloric details.</li>
+                <li>Once the details are available, you can choose to log them or go back and do another search query.</li>
+            </ul>
+        </div>
 
-                <div class="form-container">
-                    <form method="post">
-                        {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="food_query" class="form-label">Food Query:</label>
-                            <input type="text" name="food_query" id="food_query" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="quantity" class="form-label">Quantity (g):</label>
-                            <input type="number" min="0" name="quantity" id="quantity" class="form-control" required>
-                        </div>
-                        <div class="text-center d-flex justify-content-center">
-                            <button type="submit" name="action" value="get_calories" class="btn btn-primary">Get Calories</button>  
-                        </div>
-                        
-                    </form>
+        <div class="form-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="food_query" class="form-label">Food Name:</label>
+                    <input type="text" name="food_query" id="food_query" class="form-control" required autofocus placeholder="e.g., Pizza">
                 </div>
-                <div class="info-container">
-                    <h2 class="text-center mb-3">How to Use:</h2>
-                    <p>1. Input the name of the food and the amount eaten in grams to view the food's caloric details.</p>
-                    <p>2. Once the details are available, you can choose to log them or go back and do another search query.</p>
+                <div class="mb-3">
+                    <label for="quantity" class="form-label">Quantity (g):</label>
+                    <input type="number" min="0" name="quantity" id="quantity" class="form-control" required placeholder="e.g., 100">
                 </div>
-            </div>
+                <div class="text-center">
+                    <button type="submit" name="action" value="get_calories" class="btn btn-primary">Get Calories</button>
+                </div>
+            </form>
         </div>
     </div>
     
