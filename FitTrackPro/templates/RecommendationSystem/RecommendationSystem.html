@@ -15,7 +15,7 @@
             color: #333333; /* Dark text color */
         }
         .container-transparent {
-            background-color: rgba(255, 255, 255, 0.9); /* Lighter container background */
+            background-color: rgba(255, 255, 255); /* Lighter container background */
             padding: 20px;
             border-radius: 8px;
         }
@@ -49,20 +49,41 @@
         }
         .list-group-item a {
             color: #007bff; /* Blue link color */
+            .btn-primary:hover {
+                background-color: #0056b3; /* Darker hover color for primary button */
+                border-color: #0056b3; /* Darker hover border color for primary button */
+            }
+            .btn-success {
+                background-color: #28a745; /* Green success button color */
+                border-color: #28a745; /* Green success button border color */
+                color: #ffffff; /* Light text color */
+            }
         }
     </style>
 </head>
 <body>
+    {% if messages %}
+    <ul class="list-unstyled mb-0"> 
+      {% for message in messages %}
+      <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% endif %} d-flex align-items-center justify-content-center" role="alert" style="width: 100vw;">
+        <ul class="list-unstyled mb-0"> 
+            <li>{{ message }}</li>
+        </ul>
+    </div>
+      {% endfor %}
+    </ul>
+  
+{% endif %}
 
 <div class="container mt-4">
     <div class="row justify-content-center">
         <div class="col-lg-6">
             <div class="container-transparent text-center">
                 <h1 class="mb-4">Input Ingredients</h1>
-                <form method="post">
+                <form method="GET">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <input type="text" name="ingreds" id="ingreds" class="form-control" required>
+                        <input type="text" name="ingreds" id="ingreds" class="form-control" placeholder="e.g., Bread, Tomato, cheese"required>
                     </div>
                     <div class="text-center">
                         <button type="submit" name="action" value="get_recs" class="btn btn-primary">Get Recommendation</button>  
@@ -89,11 +110,23 @@
                         <ul class="list-group">
                             {% for index, row in Recommendation.iterrows %}
                                 <li class="list-group-item recommendation-item">
-                                    <h5 class="title"><a style="color: #007bff;">{{ row.Title }}</a></h5>
-                                    <div class="details" style="display: none;">
-                                        <p><strong>Ingredients:</strong> {{ row.Ingredients }}</p>
-                                        <p><strong>Instructions:</strong> {{ row.Instructions }}</p>
-                                       
+                                    <div class="row">
+                                        <div class="col-9">
+                                            <h5 class="title" ><a style="color: #007bff;">{{ row.Title }}</a></h5>
+                                            <div class="details" style="display: none;">
+                                                <p><strong>Ingredients:</strong> {{ row.Ingredients }}</p>
+                                                <p><strong>Instructions:</strong> {{ row.Instructions }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-3 text-end">
+                                            <form method="POST" class="like-recipe-form">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="recipe_name" value="{{ row.Title }}">
+                                                <input type="hidden" name="ingredients" value="{{ row.Ingredients }}">
+                                                <input type="hidden" name="instructions" value="{{ row.Instructions }}">
+                                                <button type="submit" class="btn btn-primary add-to-liked">Like</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </li>
                             {% endfor %}
@@ -106,8 +139,91 @@
         </div>
     </div>
 </div>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+    <div class="container-table">
+        <h2 class="text-center mb-4">Previously Liked Recipes</h2>
+        <p class="text-center mb-4">Click on the recipe name to view instructions and ingredients.</p>
+        {% if Liked_Recipes %}
+            <ul class="list-group">
+                {% for liked_recipe in Liked_Recipes %}
+                    <li class="list-group-item  recommendation-item">
+                        <h5 class="title" style="color: #007bff;">{{ liked_recipe.recipe_name }}</h5>
+                        <div class="details" style="display: none;">
+                        <p><strong>Ingredients:</strong> {{ liked_recipe.ingredients }}</p>
+                        <p><strong>Instructions:</strong> {{ liked_recipe.instructions }}</p>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-center">No liked recipes available.</p>
+        {% endif %}
+    </div>
+</div>
+</div>
+</div>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="container-table">
+                <h2 class="text-center mb-4">Recipes Based on Your Preferences</h2>
+                <div class="liked-recipes">
+                    {% if Liked_Recommendations|length > 0 %}
+                        <ul class="list-group">
+                            {% for index,row in Liked_Recommendations.iterrows %}
+                                <li class="list-group-item recommendation-item">
+                                    <h5 class="title" style="color: #007bff;">{{ row.Title}}</h5>
+                                    <div class="details" style="display: none;">
+                                    <p><strong>Ingredients:</strong> {{ row.Ingredients }}</p>
+                                    <p><strong>Instructions:</strong> {{ row.Instructions }}</p>
+                                    </div>    
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-center">You haven't liked any recipes yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     
 <script>
+    // Add event listener to each like recipe form
+    document.querySelectorAll('.like-recipe-form').forEach(function(form) {
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            var formData = new FormData(this); // Get form data
+            
+            // Send a POST request to the Django view using fetch API
+            fetch('/RecommendationSystem/', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Handle successful response
+                    var button = form.querySelector('.add-to-liked');
+                        button.innerText = 'Liked!'; // Change button text to 'Liked!'
+                        button.classList.remove('btn-primary'); // Remove btn-primary class
+                        button.classList.add('btn-success'); // Add btn-success class
+                        button.disabled = true; // Disable the button
+                } else {
+                    // Handle error response
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+
     // Get all recommendation items
     var recommendationItems = document.querySelectorAll('.recommendation-item');
 
