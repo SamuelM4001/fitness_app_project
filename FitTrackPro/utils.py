@@ -95,10 +95,10 @@ def title_parser(title):
     
 def recs(ingredients,n):
     data = pd.read_csv('./FitTrackPro/datacsv/parsed_data_ftp.csv')
-    with open('C:/Users/ACER/Desktop/Project/FitTrackPro/datacsv/encoding.pickle', 'rb') as f:
+    with open('./FitTrackPro/datacsv/encoding.pickle', 'rb') as f:
             tfidf_encodings = pickle.load(f)
             
-    with open('C:/Users/ACER/Desktop/Project/FitTrackPro/datacsv/trained_model.pickle', "rb") as f:
+    with open('./FitTrackPro/datacsv/trained_model.pickle', "rb") as f:
             tfidf = pickle.load(f)
             
     try:

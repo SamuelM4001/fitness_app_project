@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'Users',
     'CalorieTracker',
     'RecommendationSystem',
-    'mathfilters'
+    'mathfilters',
+    
 ]
 
 MIDDLEWARE = [
